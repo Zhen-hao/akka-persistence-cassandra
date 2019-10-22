@@ -10,7 +10,6 @@ import akka.persistence.cassandra.TestTaggingActor.Ack
 import akka.persistence.cassandra.query.scaladsl.CassandraReadJournal
 import akka.persistence.cassandra.{ CassandraLifecycle, CassandraSpec, TestTaggingActor }
 import akka.persistence.query.{ PersistenceQuery, ReadJournalProvider }
-import akka.stream.ActorMaterializer
 import akka.stream.testkit.scaladsl.TestSink
 import com.typesafe.config.{ Config, ConfigFactory }
 
@@ -37,8 +36,6 @@ object CassandraReadJournalOverrideSpec {
 }
 
 class CassandraReadJournalOverrideSpec extends CassandraSpec(CassandraReadJournalOverrideSpec.config) {
-
-  implicit val materialiser = ActorMaterializer()
 
   lazy val journal =
     PersistenceQuery(system).readJournalFor[JournalOverride](CassandraReadJournal.Identifier)

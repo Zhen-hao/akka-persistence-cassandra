@@ -16,7 +16,7 @@ import akka.persistence.cassandra.query.scaladsl.CassandraReadJournal
 import akka.persistence.query.{ EventEnvelope, NoOffset, PersistenceQuery }
 import akka.persistence.{ PersistentRepr, RecoveryCompleted }
 import akka.serialization.SerializationExtension
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import akka.stream.scaladsl.Source
 import akka.stream.testkit.scaladsl.TestSink
 import akka.testkit.TestProbe
@@ -355,7 +355,7 @@ abstract class AbstractEventsByTagMigrationSpec
   }
 
   lazy val session = cluster.connect()
-  implicit val materialiser = ActorMaterializer()(system)
+  implicit val materialiser = Materializer(system)
   val waitTime = 100.millis
 
   // if this uses the main actor system the PersistentQuery can see the
@@ -366,13 +366,13 @@ abstract class AbstractEventsByTagMigrationSpec
 
   // Lazy so they don't get created until the schema changes have happened
   lazy val systemTwo = ActorSystem("EventsByTagMigration-2", system.settings.config)
-  lazy val materialiserTwo = ActorMaterializer()(systemTwo)
+  lazy val materialiserTwo = Materializer(systemTwo)
   lazy val queriesTwo =
     PersistenceQuery(systemTwo).readJournalFor[CassandraReadJournal](CassandraReadJournal.Identifier)
 
   // for after tag1-3 columns are dropped
   lazy val systemThree = ActorSystem("EventsByTagMigration-3", system.settings.config)
-  lazy val materialiserThree = ActorMaterializer()(systemThree)
+  lazy val materialiserThree = Materializer(systemThree)
   lazy val queriesThree =
     PersistenceQuery(systemThree).readJournalFor[CassandraReadJournal](CassandraReadJournal.Identifier)
 

@@ -7,7 +7,7 @@ package akka.persistence.cassandra
 import akka.NotUsed
 import akka.persistence.cassandra.TestTaggingActor.{ Ack, Crash }
 import akka.persistence.query.{ EventEnvelope, NoOffset }
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import akka.stream.scaladsl.Source
 import akka.stream.testkit.scaladsl.TestSink
 
@@ -15,7 +15,7 @@ import scala.concurrent.duration._
 
 class EventsByTagCrashSpec extends CassandraSpec(EventsByTagRestartSpec.config) {
 
-  implicit val materialiser = ActorMaterializer()(system)
+  implicit val materialiser = Materializer(system)
 
   val waitTime = 100.milliseconds
 
