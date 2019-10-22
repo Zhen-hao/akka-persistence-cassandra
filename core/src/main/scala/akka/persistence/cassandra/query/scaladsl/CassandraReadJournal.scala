@@ -25,7 +25,7 @@ import akka.persistence.query.scaladsl._
 import akka.persistence.{ Persistence, PersistentRepr }
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Source
-import akka.stream.{ ActorAttributes, ActorMaterializer }
+import akka.stream.{ ActorAttributes, Materializer }
 import akka.util.ByteString
 import com.datastax.driver.core._
 import com.datastax.driver.core.policies.{ LoggingRetryPolicy, RetryPolicy }
@@ -116,7 +116,7 @@ class CassandraReadJournal(system: ExtendedActorSystem, cfg: Config)
   private val serialization = SerializationExtension(system)
   implicit private val ec =
     system.dispatchers.lookup(queryPluginConfig.pluginDispatcher)
-  implicit private val materializer = ActorMaterializer()(system)
+  implicit private val materializer = Materializer(system)
 
   // TODO: change categoryUid to unique config path after akka/akka#19822 is fixed
   private val metricsCategory = {
@@ -420,7 +420,7 @@ class CassandraReadJournal(system: ExtendedActorSystem, cfg: Config)
         Source.failed(e).mapMaterializedValue(_ => Future.failed(e))
       case None =>
         // completed later
-        Source.fromFutureSource(prepStmt.map(ps => source(getSession, ps)))
+        Source.futureSource(prepStmt.map(ps => source(getSession, ps)))
     }
 
   }

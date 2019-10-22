@@ -27,7 +27,7 @@ import akka.serialization.AsyncSerializer
 import akka.serialization.Serialization
 import akka.serialization.SerializationExtension
 import akka.serialization.Serializers
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import akka.stream.scaladsl.Sink
 import akka.util.OptionVal
 import com.datastax.driver.core._
@@ -86,7 +86,7 @@ class CassandraSnapshotStore(cfg: Config)
       .prepare(selectSnapshotMetadata(limit = Some(maxLoadAttempts)))
       .map(_.setConsistencyLevel(readConsistency).setIdempotent(true).setRetryPolicy(readRetryPolicy))
 
-  private implicit val materializer = ActorMaterializer()
+  private implicit val materializer = Materializer(context.system)
 
   override def preStart(): Unit =
     // eager initialization, but not from constructor

@@ -13,7 +13,7 @@ import akka.event.Logging
 import akka.persistence.cassandra.journal.CassandraJournal._
 import akka.persistence.cassandra.journal.TimeBucket
 import akka.persistence.cassandra.formatOffset
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import com.datastax.driver.core.PreparedStatement
 import com.datastax.driver.core.utils.UUIDs
 
@@ -22,7 +22,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 @InternalApi
 private[akka] class TagViewSequenceNumberScanner(session: CassandraSession, ps: Future[PreparedStatement])(
-    implicit materializer: ActorMaterializer,
+    implicit materializer: Materializer,
     ec: ExecutionContext) {
   private val log = Logging(materializer.system, getClass)
 

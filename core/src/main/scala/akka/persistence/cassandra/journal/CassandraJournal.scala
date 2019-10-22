@@ -29,7 +29,7 @@ import akka.persistence.cassandra.query.scaladsl.CassandraReadJournal
 import akka.persistence.journal.{ AsyncWriteJournal, Tagged }
 import akka.persistence.query.PersistenceQuery
 import akka.serialization.{ AsyncSerializer, Serialization, SerializationExtension }
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import akka.stream.scaladsl.Sink
 import akka.util.OptionVal
 import com.datastax.driver.core._
@@ -159,8 +159,7 @@ class CassandraJournal(cfg: Config)
   def preparedWriteInUse =
     session.prepare(writeInUse).map(_.setIdempotent(true))
 
-  implicit val materializer: ActorMaterializer =
-    ActorMaterializer()(context.system)
+  implicit val materializer = Materializer(context.system)
 
   private[akka] lazy val queries =
     PersistenceQuery(context.system.asInstanceOf[ExtendedActorSystem])

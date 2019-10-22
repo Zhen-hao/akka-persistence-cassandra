@@ -20,7 +20,7 @@ import akka.Done
 import akka.NotUsed
 import akka.actor.{ ActorSystem, NoSerializationVerificationNeeded }
 import akka.event.LoggingAdapter
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import akka.stream.Attributes
 import akka.stream.Outlet
 import akka.stream.SourceShape
@@ -64,7 +64,7 @@ final class CassandraSession(
   import settings._
 
   implicit private[akka] val ec = executionContext
-  private lazy implicit val materializer = ActorMaterializer()(system)
+  private lazy implicit val materializer = Materializer(system)
 
   // cache of PreparedStatement (PreparedStatement should only be prepared once)
   private val preparedStatements =

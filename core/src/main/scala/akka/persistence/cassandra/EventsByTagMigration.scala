@@ -20,7 +20,7 @@ import akka.persistence.cassandra.query.scaladsl.CassandraReadJournal
 import akka.cassandra.session.scaladsl.CassandraSession
 import akka.persistence.query.PersistenceQuery
 import akka.serialization.SerializationExtension
-import akka.stream.{ ActorMaterializer, OverflowStrategy }
+import akka.stream.{ Materializer, OverflowStrategy }
 import akka.stream.scaladsl.{ Sink, Source }
 import akka.util.Timeout
 import akka.{ Done, NotUsed }
@@ -109,7 +109,7 @@ class EventsByTagMigration(
 
   private[akka] val log = Logging.getLogger(system, getClass)
   private lazy val queries = PersistenceQuery(system).readJournalFor[CassandraReadJournal](readJournalNamespace)
-  private implicit val materialiser = ActorMaterializer()(system)
+  private implicit val materializer = Materializer(system)
 
   implicit val ec = system.dispatchers.lookup(system.settings.config.getString(s"$journalNamespace.plugin-dispatcher"))
   override def config: CassandraJournalConfig =
@@ -222,7 +222,7 @@ class EventsByTagMigration(
 
         // would be nice to group these up into a TagWrites message but also
         // nice that this reuses the recovery code :-/
-        Source.fromFutureSource {
+        Source.futureSource {
           prereqs.map {
             case (tp, startingSeq) => {
               log.info(
